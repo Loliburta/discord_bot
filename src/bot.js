@@ -22,8 +22,12 @@ client.on("message", (message) => {
       .substring(prefix.length)
       .split(/\s+/);
     console.log(commandName, args);
-    if (commandName === "gamble" && !isNaN(parseInt(args[0])) && parseInt(args[0]) > 0) {
-      console.log(parseInt(args[0]))
+    if (
+      commandName === "gamble" &&
+      !isNaN(parseInt(args[0])) &&
+      parseInt(args[0]) > 0
+    ) {
+      console.log(parseInt(args[0]));
       Math.random() >= 0.5
         ? message.channel.send(
             `${message.author} Wygrał ${parseInt(args[0]) * 2} żołędzi`
