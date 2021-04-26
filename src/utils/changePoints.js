@@ -4,12 +4,8 @@ const addMe = require("./addMe");
 mongoose.set("useFindAndModify", false);
 
 module.exports = changePoints = async (_id, message, points) => {
-  let strPoints = points;
+  const strPoints = points;
   points = parseInt(points);
-
-  console.log(strPoints);
-  console.log(points);
-  console.log(strPoints.charAt(strPoints.length - 1));
 
   if (isNaN(points) || points < 1) {
     return;
@@ -25,8 +21,11 @@ module.exports = changePoints = async (_id, message, points) => {
       return;
     }
     if (strPoints.charAt(strPoints.length - 1) === "%") {
-      points = parseInt((before.points * Number(strPoints.slice(0, -1))) / 100);
-      update = { $inc: { points: points * num } };
+      let x = parseInt((before.points * Number(strPoints.slice(0, -1))) / 100);
+      if (!isNaN(x)) {
+        points = x;
+        update = { $inc: { points: points * num } };
+      }
     }
     if (before.points < points) {
       message.channel.send(
@@ -34,7 +33,7 @@ module.exports = changePoints = async (_id, message, points) => {
       );
       return;
     }
-    let now = await User.findOneAndUpdate(filter, update, {
+    const now = await User.findOneAndUpdate(filter, update, {
       new: true,
     });
     num === 1
