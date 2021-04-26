@@ -45,7 +45,7 @@ client.on("message", (message) => {
       .split(/\s+/);
     console.log(commandName, args);
     if (commandName === "gamble") {
-      changePoints(message.author.id, message, parseInt(args[0]));
+      changePoints(message.author.id, message, args[0]);
     }
     if (commandName === "zoledzie") {
       checkPoints(message.author.id, message);
