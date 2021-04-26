@@ -4,6 +4,7 @@ const { Client } = require("discord.js");
 const User = require("./user.js");
 const changePoints = require("./utils/changePoints");
 const addMe = require("./utils/addMe");
+const checkPoints = require("./utils/checkPoints");
 
 const connectToDb = async () => {
   const dbLogin = process.env.DATABASE_LOGIN;
@@ -45,6 +46,9 @@ client.on("message", (message) => {
     console.log(commandName, args);
     if (commandName === "gamble") {
       changePoints(message.author.id, message, parseInt(args[0]));
+    }
+    if (commandName === "zoledzie") {
+      checkPoints(message.author.id, message);
     }
     if (commandName === "addMe") {
       addMe(message.author.id, message);
