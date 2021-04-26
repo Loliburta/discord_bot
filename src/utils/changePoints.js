@@ -10,8 +10,7 @@ module.exports = changePoints = async (_id, message, points) => {
   if (isNaN(points) || points < 1) {
     return;
   }
-
-  let num = Math.random() >= 0.5 ? 1 : -1;
+  const num = Math.random() >= 0.5 ? 1 : -1;
   const filter = { _id: _id };
   let update = { $inc: { points: points * num } };
   try {
@@ -22,14 +21,14 @@ module.exports = changePoints = async (_id, message, points) => {
     }
     if (strPoints.charAt(strPoints.length - 1) === "%") {
       let x = parseInt((before.points * Number(strPoints.slice(0, -1))) / 100);
-      if (!isNaN(x)) {
-        points = x;
-        update = { $inc: { points: points * num } };
+      if (!isNaN(x) || x < 1) {
+        return;
       }
-    }
-    if (before.points < points) {
+      points = x;
+      update = { $inc: { points: points * num } };
+    } else if (before.points < points) {
       message.channel.send(
-        `${message.author} Nie posiadasz ${points} żołędzi, masz tylko ${before.points}`
+        `${message.author} Nie posiadasz ${points} żołędzi, posiadasz tylko ${before.points}`
       );
       return;
     }
