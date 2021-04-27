@@ -8,10 +8,13 @@ const checkPoints = require("./utils/checkPoints");
 
 const connectToDb = async () => {
   const dbLogin = process.env.DATABASE_LOGIN;
-  const dbPassword = process.env.DATABASE_PASSWORD;
+  const dbPassword = process.env.TWITCH_CLIENT_ID;
   const dbURI = `mongodb+srv://${dbLogin}:${dbPassword}@user.f3nwf.mongodb.net/User?retryWrites=true&w=majority`;
   try {
     console.log("connecting to db");
+    console.log(dbLogin);
+    console.log(dbPassword);
+
     const result = await mongoose.connect(dbURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
@@ -37,30 +40,6 @@ client.on("message", (message) => {
   console.log(message.author.id);
   if (message.content === "e śpisz?") {
     message.channel.send("nie");
-  }
-  if (
-    message.content === "!gamble 1" &&
-    message.author.tag === "szyszka#9642"
-  ) {
-    message.channel.send("przestań gamblować po 1 żołędziu Szycha");
-  }
-  if (message.content === "czy kox to kox?") {
-    message.channel.send("nie wiem");
-  }
-  if (message.content === "Co na grzale?") {
-    message.channel.send("chujnia, ananas i gruszka");
-  }
-  if (message.content === "Czy szyszka to rura?") {
-    message.channel.send("nie, no może troszkę");
-  }
-  if (message.content === "Czy rura to ruda?") {
-    message.channel.send("przestańcie mi zdawać głupie pytania");
-  }
-  if (message.content === "Czemu kierowca to stuleja?") {
-    message.channel.send("taki się urodził");
-  }
-  if (message.content === "Czy ruda uprawiała masturbacje z koleżanką ?") {
-    message.channel.send("... tak");
   }
   if (message.content.startsWith(prefix)) {
     const [commandName, ...args] = message.content
