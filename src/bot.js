@@ -1,31 +1,41 @@
 require("dotenv").config();
 const mongoose = require("mongoose");
+const tmi = require("tmi.js");
 const { Client } = require("discord.js");
-const User = require("./user.js");
 const changePoints = require("./utils/changePoints");
 const addMe = require("./utils/addMe");
 const checkPoints = require("./utils/checkPoints");
+const withdraw = require("./utils/withdraw");
 
-const connectToDb = async () => {
-  const dbLogin = process.env.DATABASE_LOGIN;
-  const dbPassword = process.env.TWITCH_CLIENT_ID;
-  const dbURI = `mongodb+srv://${dbLogin}:${dbPassword}@user.f3nwf.mongodb.net/User?retryWrites=true&w=majority`;
+const clientId = process.env.TWITCH_CLIENT_ID;
+const oauthToken = process.env.TWITCH_OAUTH_TOKEN;
+const channel = process.env.TWITCH_CHANNEL;
+
+const dbLogin = process.env.DATABASE_LOGIN;
+const dbPassword = process.env.DATABASE_PASSWORD;
+
+// let link = `https://id.twitch.tv/oauth2/authorize?client_id=${clientId}&redirect_uri=http://localhost&response_type=token&scope=chat:edit+chat:read`;
+
+const connect = async () => {
+  const dbURI = `mongodb+srv://${dbLogin}:${dbPassword}@users.f3nwf.mongodb.net/Users?retryWrites=true&w=majority`;
   try {
     console.log("connecting to db");
-    console.log(dbLogin);
-    console.log(dbPassword);
-
     const result = await mongoose.connect(dbURI, {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
     console.log("connected to db");
-    client.login(process.env.DISCORDJS_BOT_TOKEN);
+    console.log("connecting to twitch");
+    await twitchClient.connect();
+    console.log("connected to twitch");
+    console.log("logging to discord");
+    await client.login(process.env.DISCORDJS_BOT_TOKEN);
   } catch (error) {
     console.log(error);
   }
 };
 
+// Discord
 const client = new Client();
 const prefix = "!";
 
@@ -33,13 +43,12 @@ client.on("ready", () => {
   console.log(`${client.user.username} has logged in`);
 });
 client.on("message", (message) => {
+  // Ignore echoed messages.
   if (message.author.bot) {
     return;
   }
-  console.log(`[${message.author.tag}] ${message}`);
-  console.log(message.author.id);
   if (message.content === "e śpisz?") {
-    message.channel.send("nie");
+    message.channel.send("nie śpie, streama mam");
   }
   if (message.content.startsWith(prefix)) {
     const [commandName, ...args] = message.content
@@ -47,16 +56,41 @@ client.on("message", (message) => {
       .substring(prefix.length)
       .split(/\s+/);
     console.log(commandName, args);
+
+    //available commands
     if (commandName === "gamble") {
       changePoints(message.author.id, message, args[0]);
     }
-    if (commandName === "zoledzie") {
+    if (commandName === "zoledzie" || commandName === "żołędzie") {
       checkPoints(message.author.id, message);
     }
     if (commandName === "addMe") {
       addMe(message.author.id, message);
     }
+    if (commandName === "wyplata" || commandName === "wypłata") {
+      withdraw(message.author.id, message, args, twitchClient);
+    }
   }
 });
 
-connectToDb();
+//Twitch
+const twitchClient = new tmi.Client({
+  options: { debug: true },
+  identity: {
+    username: "bank_lesny",
+    password: `oauth:${oauthToken}`,
+  },
+  channels: [channel],
+});
+
+twitchClient.on("message", (channel, tags, message, self) => {
+  // Ignore echoed messages.
+  console.log(message);
+  if (self) return;
+
+  if (message.toLowerCase() === "!e_śpisz?") {
+    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
+  }
+});
+
+connect();

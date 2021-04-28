@@ -5,26 +5,26 @@ mongoose.set("useFindAndModify", false);
 
 module.exports = changePoints = async (_id, message, points) => {
   const strPoints = points;
-  console.log(strPoints);
   points = parseInt(points);
-  console.log(strPoints.charAt(strPoints.length - 1));
-  if (strPoints.charAt(strPoints.length - 1) !== "%") {
-    if (isNaN(points) || points < 1) {
-      return;
-    }
+  if (
+    strPoints.charAt(strPoints.length - 1) !== "%" &&
+    (isNaN(points) || points < 1)
+  ) {
+    message.channel.send(
+      `${message.author} nieprawidłowa liczba lub ilość mniejsza od 1`
+    );
+    return;
   }
-  const num = Math.random() >= 0.7 ? 1 : -1;
+  const num = Math.random() >= 0.5 ? 1 : -1;
   const filter = { _id: _id };
   let update = { $inc: { points: points * num } };
   try {
     before = await User.findOne(filter);
     if (!before) {
       await addMe(_id, message);
-
       return;
     }
     if (strPoints.charAt(strPoints.length - 1) === "%") {
-      console.log("dziala");
       let x = parseInt((before.points * Number(strPoints.slice(0, -1))) / 100);
       if (isNaN(x) || x < 1) {
         return;
