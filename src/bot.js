@@ -6,6 +6,7 @@ const changePoints = require("./utils/changePoints");
 const addMe = require("./utils/addMe");
 const checkPoints = require("./utils/checkPoints");
 const withdraw = require("./utils/withdraw");
+const work = require("./utils/work");
 
 const clientId = process.env.TWITCH_CLIENT_ID;
 const oauthToken = process.env.TWITCH_OAUTH_TOKEN;
@@ -60,15 +61,14 @@ client.on("message", (message) => {
     //available commands
     if (commandName === "gamble") {
       changePoints(message.author.id, message, args[0]);
-    }
-    if (commandName === "zoledzie" || commandName === "żołędzie") {
+    } else if (commandName === "zoledzie" || commandName === "żołędzie") {
       checkPoints(message.author.id, message);
-    }
-    if (commandName === "addMe") {
+    } else if (commandName === "addMe") {
       addMe(message.author.id, message);
-    }
-    if (commandName === "wyplata" || commandName === "wypłata") {
+    } else if (commandName === "wyplata" || commandName === "wypłata") {
       withdraw(message.author.id, message, args, twitchClient);
+    } else if (commandName === "pracuj") {
+      work(message.author.id, message);
     }
   }
 });
