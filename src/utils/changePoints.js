@@ -15,7 +15,7 @@ module.exports = changePoints = async (_id, message, points) => {
     );
     return;
   }
-  const num = Math.random() >= 0.5 ? 1 : -1;
+  const num = Math.random() >= 0.55 ? 1 : -1;
   const filter = { _id: _id };
   let update = { $inc: { points: points * num } };
   try {

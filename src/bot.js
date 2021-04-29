@@ -48,6 +48,8 @@ client.on("message", (message) => {
   if (message.author.bot) {
     return;
   }
+  const now = new Date()
+  console.log(now, message.author.username, message.content)
   if (message.content === "e śpisz?") {
     message.channel.send("nie śpie, streama mam");
   }

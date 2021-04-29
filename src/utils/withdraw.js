@@ -29,7 +29,7 @@ module.exports = withdraw = async (_id, message, args, twitchClient) => {
         const now = await User.findOneAndUpdate(filter, update, {
           new: true,
         });
-        twitchClient.say(channel, `!give ${args[1]} ${withdrawPoints}`);
+        twitchClient.say(channel, `!addpoints ${args[1]} ${withdrawPoints}`);
         message.channel.send(
           `${message.author} wypłaciłeś ${withdrawPoints} żołędzi, posiadasz teraz ${now.points}`
         );

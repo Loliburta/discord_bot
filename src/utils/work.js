@@ -7,7 +7,7 @@ module.exports = work = async (_id, message) => {
       const diff = new Date() - usr.time;
       const hour = 3600000;
       if (diff > hour) {
-        earnedPoints = Math.floor(Math.random() * 250) + 100;
+        earnedPoints = Math.floor(Math.random() * 250) + 250;
         const update = { $inc: { points: earnedPoints }, time: new Date() };
         const now = await User.findOneAndUpdate(filter, update, {
           new: true,
