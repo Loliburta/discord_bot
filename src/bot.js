@@ -7,6 +7,7 @@ const addMe = require("./utils/addMe");
 const checkPoints = require("./utils/checkPoints");
 const withdraw = require("./utils/withdraw");
 const work = require("./utils/work");
+const ranking = require("./utils/ranking");
 
 const clientId = process.env.TWITCH_CLIENT_ID;
 const oauthToken = process.env.TWITCH_OAUTH_TOKEN;
@@ -48,8 +49,8 @@ client.on("message", (message) => {
   if (message.author.bot) {
     return;
   }
-  const now = new Date()
-  console.log(now, message.author.username, message.content)
+  const now = new Date();
+  console.log(now, message.author.username, message.content);
   if (message.content === "e śpisz?") {
     message.channel.send("nie śpie, streama mam");
   }
@@ -71,6 +72,8 @@ client.on("message", (message) => {
       withdraw(message.author.id, message, args, twitchClient);
     } else if (commandName === "pracuj") {
       work(message.author.id, message);
+    } else if (commandName === "ranking") {
+      ranking(message.author.id, message);
     }
   }
 });
