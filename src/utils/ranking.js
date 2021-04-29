@@ -8,9 +8,13 @@ module.exports = ranking = async (_id, message) => {
         docs = docs.slice(0, 5);
         let count = 1;
         for (const usr of docs) {
-          let username = await message.guild.members.fetch(usr._id);
-          let points = usr.points;
-          ranking += `${count} ${username} ${points} żołędzi\n`;
+          const obj = await message.guild.members.fetch(usr._id);
+          const username = obj.user.username;
+          const points = usr.points;
+          ranking += `${count} ${username[0]}${username.slice(
+            1,
+            username.length
+          )} ${points} żołędzi\n`;
           count += 1;
         }
         message.channel.send(ranking);
