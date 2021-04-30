@@ -1,4 +1,6 @@
 const User = require("../user.js");
+const addMe = require("./addMe");
+
 module.exports = saveUser = async (_id, message, args) => {
   const points = parseInt(args[0]);
   const guess = parseInt(args[1]);
