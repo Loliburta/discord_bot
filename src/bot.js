@@ -8,6 +8,7 @@ const checkPoints = require("./utils/checkPoints");
 const withdraw = require("./utils/withdraw");
 const work = require("./utils/work");
 const ranking = require("./utils/ranking");
+const roulette = require("./utils/roulette");
 
 const clientId = process.env.TWITCH_CLIENT_ID;
 const oauthToken = process.env.TWITCH_OAUTH_TOKEN;
@@ -74,6 +75,8 @@ client.on("message", (message) => {
       work(message.author.id, message);
     } else if (commandName === "ranking") {
       ranking(message.author.id, message);
+    } else if (commandName === "ruletka") {
+      roulette(message.author.id, message, args);
     }
   }
 });
