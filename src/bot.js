@@ -98,6 +98,12 @@ twitchClient.on("message", (channel, tags, message, self) => {
 
   if (message.toLowerCase() === "!e_śpisz?") {
     twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
+  } else if (message.toLowerCase() === "!e_śpysz?") {
+    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
+  } else if (message.toLowerCase() === "e śpysz?") {
+    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
+  } else if (message.toLowerCase() === "e śpisz?") {
+    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
   }
 });
 

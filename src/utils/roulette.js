@@ -6,7 +6,7 @@ module.exports = saveUser = async (_id, message, args) => {
   const guess = parseInt(args[1]);
   if (isNaN(points) || isNaN(guess)) {
     message.channel.send(
-      `${message.author} poprawny zapis ruletki to !ruletka [ilość] [numer] numer: 0-10 np !ruletka 1000 8`
+      `${message.author} poprawny zapis ruletki to !ruletka [ilość] [numer] numer: 1-10 np !ruletka 1000 8`
     );
     return;
   }
@@ -16,9 +16,9 @@ module.exports = saveUser = async (_id, message, args) => {
     );
     return;
   }
-  if (guess < 0 || guess > 10) {
+  if (guess < 1 || guess > 10) {
     message.channel.send(
-      `${message.author} poprawny zapis to !ruletka [ilość] [numer] numer od 0 do 10`
+      `${message.author} poprawny zapis to !ruletka [ilość] [numer] numer od 1 do 10`
     );
     return;
   }
@@ -37,7 +37,7 @@ module.exports = saveUser = async (_id, message, args) => {
       );
       return;
     }
-    const winningGuess = Math.floor(Math.random() * 11);
+    const winningGuess = Math.floor(Math.random() * 10) + 1;
     if (guess === winningGuess) {
       const now = await User.findOneAndUpdate(filter, update, {
         new: true,
@@ -45,7 +45,7 @@ module.exports = saveUser = async (_id, message, args) => {
       message.channel.send(
         `${message.author} udało ci się trafić numer! zarobiłeś ${
           points * 10
-        }, posiadasz teraz ${now.points}`
+        }, posiadasz teraz ${now.points} żołędzi`
       );
     } else {
       update = { $inc: { points: -points } };
@@ -53,7 +53,7 @@ module.exports = saveUser = async (_id, message, args) => {
         new: true,
       });
       message.channel.send(
-        `${message.author} nie udało ci się trafić, wypadło na numer ${winningGuess}, posiadasz teraz ${now.points}`
+        `${message.author} nie udało ci się trafić, wypadło na numer ${winningGuess}, posiadasz teraz ${now.points} żołędzi`
       );
     }
   } catch (error) {

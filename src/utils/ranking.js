@@ -5,17 +5,26 @@ module.exports = ranking = async (_id, message) => {
     User.find({})
       .sort([["points", -1]])
       .exec(async function (err, docs) {
-        docs = docs.slice(0, 5);
         let count = 1;
         for (const usr of docs) {
-          const obj = await message.guild.members.fetch(usr._id);
-          const username = obj.user.username;
-          const points = usr.points;
-          ranking += `${count} ${username[0]}${username.slice(
-            1,
-            username.length
-          )} ${points} żołędzi\n`;
-          count += 1;
+          if (count < 6) {
+            try {
+              const obj = await message.guild.members.fetch(usr._id);
+              const username = obj.user.username;
+              console.log(username);
+              const points = usr.points;
+              ranking += `${count} ${username[0]}${username.slice(
+                1,
+                username.length
+              )} ${points} żołędzi\n`;
+              count += 1;
+            } catch (err) {
+              console.log(err);
+              continue;
+            }
+          } else {
+            break;
+          }
         }
         message.channel.send(ranking);
       });
