@@ -52,9 +52,6 @@ client.on("message", (message) => {
   }
   const now = new Date();
   console.log(now, message.author.username, message.content);
-  if (message.content === "e śpisz?") {
-    message.channel.send("nie śpie, streama mam");
-  }
   if (message.content.startsWith(prefix)) {
     const [commandName, ...args] = message.content
       .trim()
@@ -63,20 +60,34 @@ client.on("message", (message) => {
     console.log(commandName, args);
 
     //available commands
-    if (commandName === "gamble") {
-      changePoints(message.author.id, message, args[0]);
-    } else if (commandName === "zoledzie" || commandName === "żołędzie") {
-      checkPoints(message.author.id, message);
-    } else if (commandName === "addMe") {
-      addMe(message.author.id, message);
-    } else if (commandName === "wyplata" || commandName === "wypłata") {
-      withdraw(message.author.id, message, args, twitchClient);
-    } else if (commandName === "pracuj") {
-      work(message.author.id, message);
-    } else if (commandName === "ranking") {
-      ranking(message.author.id, message);
-    } else if (commandName === "ruletka") {
-      roulette(message.author.id, message, args);
+    switch (commandName) {
+      case "gamble":
+        changePoints(message.author.id, message, args[0]);
+        break;
+      case "zoledzie":
+        checkPoints(message.author.id, message);
+        break;
+      case "żołędzie":
+        checkPoints(message.author.id, message);
+        break;
+      case "addMe":
+        addMe(message.author.id, message);
+        break;
+      case "wyplata":
+        withdraw(message.author.id, message, args, twitchClient);
+        break;
+      case "wypłata":
+        withdraw(message.author.id, message, args, twitchClient);
+        break;
+      case "pracuj":
+        work(message.author.id, message);
+        break;
+      case "ranking":
+        ranking(message.author.id, message);
+        break;
+      case "ruletka":
+        roulette(message.author.id, message, args);
+        break;
     }
   }
 });
@@ -95,15 +106,12 @@ twitchClient.on("message", (channel, tags, message, self) => {
   // Ignore echoed messages.
   console.log(message);
   if (self) return;
-
-  if (message.toLowerCase() === "!e_śpisz?") {
-    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
-  } else if (message.toLowerCase() === "!e_śpysz?") {
-    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
-  } else if (message.toLowerCase() === "e śpysz?") {
-    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
-  } else if (message.toLowerCase() === "e śpisz?") {
-    twitchClient.say("#szysszxka", `@${tags.username} nie, streama mam`);
+  if (
+    ["!e_śpisz?", "!e_śpysz?", "e śpysz?", "e śpisz?"].includes(
+      message.toLowerCase()
+    )
+  ) {
+    twitchClient.say(channel, `@${tags.username} nie, streama mam`);
   }
 });
 

@@ -46,7 +46,7 @@ module.exports = changePoints = async (_id, message, points) => {
           `${message.author} Wygrał ${points} żołędzi, posiadasz teraz ${now.points}`
         )
       : message.channel.send(
-          `${message.author} Przejebał ${points} żołędzi, posiadasz teraz ${now.points}`
+          `${message.author} Przewalił ${points} żołędzi, posiadasz teraz ${now.points}`
         );
   } catch (error) {
     console.log(error);
