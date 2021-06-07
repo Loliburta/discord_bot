@@ -10,6 +10,8 @@ const work = require("./utils/work");
 const ranking = require("./utils/ranking");
 const roulette = require("./utils/roulette");
 const Death = require("./death");
+const addDeath = require("./twitchUtils/addDeath");
+const checkDeaths = require("./twitchUtils/checkDeaths");
 
 const clientId = process.env.TWITCH_CLIENT_ID;
 const oauthToken = process.env.TWITCH_OAUTH_TOKEN;
@@ -108,19 +110,13 @@ twitchClient.on("message", (channel, tags, message, self) => {
   message = message.toLowerCase().trim();
   messageArray = message.split(" ");
   if (self) return;
-  if (
-    ["!e_śpisz?", "!e_śpysz?", "e śpysz?", "e śpisz?"].includes(
-      message.toLowerCase()
-    )
-  ) {
+  if (["!e_śpisz?", "!e_śpysz?", "e śpysz?", "e śpisz?"].includes(message)) {
     twitchClient.say(channel, `@${tags.username} nie, streama mam`);
   }
   if (
     tags.badges.moderator === "1" &&
     tags["display-name"] === "StreamElements"
   ) {
-    console.log("streamelements");
-
     if (messageArray.includes("zmienił/a") && messageArray.includes("grę")) {
       console.log(messageArray);
       deathsCounterGame = message.split("„")[1].slice(0, -2);
@@ -140,25 +136,10 @@ twitchClient.on("message", (channel, tags, message, self) => {
     }
   }
   if (message === "!zgon") {
-    const addDeath = async () => {
-      const update = { $inc: { deaths: 1 } };
-      const filter = { game: deathsCounterGame };
-      const countRows = await Death.countDocuments(filter);
-      if (!countRows) {
-        const death = new Death({
-          game: deathsCounterGame,
-        });
-        await death.save();
-      }
-      const now = await Death.findOneAndUpdate(filter, update, {
-        new: true,
-      });
-      twitchClient.say(
-        channel,
-        `Szyszka umarła ${now.deaths} w grze ${deathsCounterGame}`
-      );
-    };
-    addDeath();
+    addDeath(deathsCounterGame, twitchClient, channel);
+  }
+  if (message === "!zgony") {
+    checkDeaths(deathsCounterGame, twitchClient, channel);
   }
 });
 
