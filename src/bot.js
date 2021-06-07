@@ -9,6 +9,7 @@ const withdraw = require("./utils/withdraw");
 const work = require("./utils/work");
 const ranking = require("./utils/ranking");
 const roulette = require("./utils/roulette");
+const Death = require("./death");
 
 const clientId = process.env.TWITCH_CLIENT_ID;
 const oauthToken = process.env.TWITCH_OAUTH_TOKEN;
@@ -101,10 +102,10 @@ const twitchClient = new tmi.Client({
   },
   channels: [channel],
 });
-
+let deathsCounterGame = "-";
 twitchClient.on("message", (channel, tags, message, self) => {
   // Ignore echoed messages.
-  console.log(message);
+  message = message.toLowerCase().trim();
   if (self) return;
   if (
     ["!e_śpisz?", "!e_śpysz?", "e śpysz?", "e śpisz?"].includes(
@@ -112,6 +113,39 @@ twitchClient.on("message", (channel, tags, message, self) => {
     )
   ) {
     twitchClient.say(channel, `@${tags.username} nie, streama mam`);
+  }
+  if (
+    tags.badges.moderator === "1" &&
+    message.split(" ").includes("!ustawzgony")
+  ) {
+    if (message.split(" ").length > 1) {
+      deathsCounterGame = message.split(" ").slice(1).join(" ");
+      twitchClient.say(
+        channel,
+        `Ustawiono licznik śmierci dla gry ${deathsCounterGame}`
+      );
+    }
+  }
+  if (message === "!zgon") {
+    const addDeath = async () => {
+      const update = { $inc: { deaths: 1 } };
+      const filter = { game: deathsCounterGame };
+      const countRows = await Death.countDocuments(filter);
+      if (!countRows) {
+        const death = new Death({
+          game: deathsCounterGame,
+        });
+        await death.save();
+      }
+      const now = await Death.findOneAndUpdate(filter, update, {
+        new: true,
+      });
+      twitchClient.say(
+        channel,
+        `Szyszka umarła ${now.deaths} w grze ${deathsCounterGame}`
+      );
+    };
+    addDeath();
   }
 });
 
