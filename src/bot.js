@@ -106,6 +106,7 @@ let deathsCounterGame = "-";
 twitchClient.on("message", (channel, tags, message, self) => {
   // Ignore echoed messages.
   message = message.toLowerCase().trim();
+  messageArray = message.split(" ");
   if (self) return;
   if (
     ["!e_śpisz?", "!e_śpysz?", "e śpysz?", "e śpisz?"].includes(
@@ -116,9 +117,21 @@ twitchClient.on("message", (channel, tags, message, self) => {
   }
   if (
     tags.badges.moderator === "1" &&
-    message.split(" ").includes("!ustawzgony")
+    tags["display-name"] === "StreamElements"
   ) {
-    if (message.split(" ").length > 1) {
+    console.log("streamelements");
+
+    if (messageArray.includes("zmienił/a") && messageArray.includes("grę")) {
+      console.log(messageArray);
+      deathsCounterGame = message.split("„")[1].slice(0, -2);
+      twitchClient.say(
+        channel,
+        `Ustawiono licznik śmierci dla gry ${deathsCounterGame}`
+      );
+    }
+  }
+  if (tags.badges.moderator === "1" && messageArray.includes("!ustawzgony")) {
+    if (messageArray.length > 1) {
       deathsCounterGame = message.split(" ").slice(1).join(" ");
       twitchClient.say(
         channel,
